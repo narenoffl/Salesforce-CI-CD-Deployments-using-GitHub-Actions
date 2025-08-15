@@ -27,12 +27,11 @@ jobs:
         run: echo "${{ secrets.JWT_KEY }}" > server.key
 
       # Step 4: Authenticate to Salesforce Production
-      - name: Authenticate to Production
-        run: sf auth jwt grant \
-              --username "${{ secrets.SF_USERNAME_PROD }}" \
-              --jwt-key-file server.key \
-              --client-id "${{ secrets.SF_CONSUMER_KEY_PROD }}" \
-              --instance-url "${{ secrets.SF_LOGIN_URL_PROD }}"
+      - name: 'Deploy to environment with running all local tests'
+        run: |
+                echo "${{ secrets.JWT_SERVER_KEY }}" > server.key
+                sf org login jwt --username ${{ secrets.SF_USERNAME_PROD }} --jwt-key-file server.key --client-id ${{ secrets.SF_CONSUMER_KEY_PROD }} --instance-url ${{ secrets.SF_LOGIN_URL_PROD }} --set-default
+                sf project deploy start --source-dir changed-sources/force-app --test-level RunLocalTests
 
       # Step 5: Deploy Metadata to Production
       - name: Deploy Metadata
