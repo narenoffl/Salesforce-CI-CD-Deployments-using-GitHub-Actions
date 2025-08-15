@@ -2,39 +2,39 @@ name: Salesforce CI/CD - Production Only
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'force-app/**'
 
 jobs:
-  deploy_prod:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Checkout repository code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Step 2: Install Salesforce CLI via npm
-      - name: Install Salesforce CLI
-        run: |
-          npm install @salesforce/cli --location=global
-          nodeInstallPath=$(npm config get prefix)
-          echo "$nodeInstallPath/bin" >> $GITHUB_PATH
-
-      # Step 3: Create JWT key file from GitHub secret
-      - name: Create JWT key file
-        run: echo "${{ secrets.JWT_KEY }}" > server.key
-
-      # Step 4: Authenticate to Salesforce Production
-      - name: 'Deploy to environment with running all local tests'
-        run: |
-                echo "${{ secrets.JWT_SERVER_KEY }}" > server.key
-                sfdx org login jwt --username ${{ secrets.SF_USERNAME_PROD }} --jwt-key-file server.key --client-id ${{ secrets.SF_CONSUMER_KEY_PROD }} --instance-url ${{ secrets.SF_LOGIN_URL_PROD }} --set-default
+  Deploy-to-sffnoobs-environment:
+      runs-on: ubuntu-latest
+      environment: sffnoobs
+      steps:
+          - uses: actions/setup-node@v3
+            with:
+              node-version: '18'
+          - name: 'Checkout source code'
+            uses: actions/checkout@v3
+            with:
+              fetch-depth: '2'
                 
+          # Now Install Salesforce CLI
+          - name: 'Install sfdx'
+            run: npm install @salesforce/cli --global
+          - name: 'Installing sfdx git delta'
+            run: | 
+                echo Y | sfdx plugins:install sfdx-git-delta
+                sfdx plugins
 
-      # Step 5: Deploy Metadata to Production
-      - name: Deploy Metadata
-        run: sfdx project deploy start \
-              --target-org "${{ secrets.SF_USERNAME_PROD }}" \
-              
+          - name: 'Create delta packages'
+            run: | 
+                mkdir changed-sources
+                sf sgd source delta --to "HEAD" --from "HEAD~1" --output changed-sources/ --generate-delta --source force-app/
+                echo "[INFO] Diff generated"
+                
+          - name: 'Deploy to environment with running all local tests'
+            run: |
+                echo "${{ secrets.JWT_SERVER_KEY }}" > server.key
+                sf org login jwt --username ${{ secrets.SF_USERNAME_PROD }} --jwt-key-file server.key --client-id ${{ secrets.SF_CONSUMER_KEY_PROD }} --instance-url ${{ secrets.SF_LOGIN_URL_PROD }} --set-default
+                sf project deploy start --source-dir changed-sources/force-app --test-level RunLocalTests
