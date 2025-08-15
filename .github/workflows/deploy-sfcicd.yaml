@@ -37,4 +37,4 @@ jobs:
       - name: Deploy Metadata
         run: sf project deploy start \
               --target-org "${{ secrets.SF_USERNAME_PROD }}" \
-              --verbose
+              
