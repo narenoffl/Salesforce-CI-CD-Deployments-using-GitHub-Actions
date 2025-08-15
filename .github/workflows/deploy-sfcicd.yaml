@@ -30,11 +30,11 @@ jobs:
       - name: 'Deploy to environment with running all local tests'
         run: |
                 echo "${{ secrets.JWT_SERVER_KEY }}" > server.key
-                sf org login jwt --username ${{ secrets.SF_USERNAME_PROD }} --jwt-key-file server.key --client-id ${{ secrets.SF_CONSUMER_KEY_PROD }} --instance-url ${{ secrets.SF_LOGIN_URL_PROD }} --set-default
+                sfdx org login jwt --username ${{ secrets.SF_USERNAME_PROD }} --jwt-key-file server.key --client-id ${{ secrets.SF_CONSUMER_KEY_PROD }} --instance-url ${{ secrets.SF_LOGIN_URL_PROD }} --set-default
                 
 
       # Step 5: Deploy Metadata to Production
       - name: Deploy Metadata
-        run: sf project deploy start \
+        run: sfdx project deploy start \
               --target-org "${{ secrets.SF_USERNAME_PROD }}" \
               
