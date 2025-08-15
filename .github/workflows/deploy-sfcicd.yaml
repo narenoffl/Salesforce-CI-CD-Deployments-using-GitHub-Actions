@@ -28,11 +28,13 @@ jobs:
 
       # Step 4: Authenticate to Salesforce Production
       - name: Authenticate to Production
-        run: sf auth jwt grant \
-              --username "${{ secrets.SF_USERNAME_PROD }}" \
-              --jwt-key-file server.key \
-              --client-id "${{ secrets.SF_CONSUMER_KEY_PROD }}" \
-              --instance-url "${{ secrets.SF_LOGIN_URL_PROD }}"
+        run: sf org login jwt \
+         --username ${{ secrets.DEPLOYMENT_USER_NAME }} \
+          --jwt-key-file server.key \
+          --client-id ${{ secrets.CONSUMER_KEY }} \
+          --instance-url ${{ secrets.SF_LOGIN_URL_PROD }} \
+          --set-default
+
 
       # Step 5: Deploy Metadata to Production
       - name: Deploy Metadata
