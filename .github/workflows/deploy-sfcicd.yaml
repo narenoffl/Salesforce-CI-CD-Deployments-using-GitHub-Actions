@@ -1,12 +1,12 @@
-name: Salesforce CI/CD - Production Only
+-name: Salesforce CI/CD - Production Only
 
-on:
+-on:
   push:
     branches: [ main ]
     paths:
       - 'force-app/**'
 
-jobs:
+-jobs:
   Deploy-to-sffnoobs-environment:
       runs-on: ubuntu-latest
       environment: sffnoobs
