@@ -15,9 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Install Salesforce CLI using official GitHub Action
+      # Step 2: Install Salesforce CLI via npm
       - name: Install Salesforce CLI
-        uses: salesforcecli/github-action@v2
+        run: |
+          npm install @salesforce/cli --location=global
+          nodeInstallPath=$(npm config get prefix)
+          echo "$nodeInstallPath/bin" >> $GITHUB_PATH
 
       # Step 3: Create JWT key file from GitHub secret
       - name: Create JWT key file
