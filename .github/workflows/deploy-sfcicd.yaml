@@ -30,7 +30,7 @@ jobs:
       - name: Authenticate to Production
         run: |
               echo "${{ secrets.JWT_KEY }}" > server.key
-              sfdx force:auth:jwt:grant -u "${{ secrets.DEPLOYMENT_USER_NAME }}" -f server.key -i "${{ secrets.CONSUMER_KEY }}" -r "${{ secrets.SF_LOGIN_URL_PROD }}" --setdefaultusername
+              sfdx force:auth:jwt:grant -u "${{ secrets.SF_USERNAME_PROD }}" -f server.key -i "${{ secrets.SF_CONSUMER_KEY_PROD }}" -r "${{ secrets.SF_LOGIN_URL_PROD }}" --setdefaultusername
 
 
 
