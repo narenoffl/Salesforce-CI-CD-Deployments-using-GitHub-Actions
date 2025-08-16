@@ -28,7 +28,7 @@ jobs:
 
       # Step 4: Authenticate to Salesforce Production
       - name: Authenticate to Production
-        run: sf org login jwt \
+        run: sfdx force:auth:jwt:grant \
          --username ${{ secrets.DEPLOYMENT_USER_NAME }} \
           --jwt-key-file server.key \
           --client-id ${{ secrets.CONSUMER_KEY }} \
