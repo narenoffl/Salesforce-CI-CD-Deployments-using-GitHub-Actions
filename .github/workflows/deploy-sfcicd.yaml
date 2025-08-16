@@ -24,7 +24,7 @@ jobs:
 
       # Step 3: Create JWT key file from GitHub secret
       - name: Create JWT key file
-        run: echo "${{ secrets.JWT_KEY }}" > server.key
+        run: echo "${{ secrets.JWT_SERVER_KEY }}" > server.key
 
       # Step 4: Authenticate to Salesforce Production
       - name: Authenticate to Production
