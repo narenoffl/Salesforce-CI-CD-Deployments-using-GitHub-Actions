@@ -26,4 +26,7 @@ jobs:
       - name: Create JWT key file
         run: echo "${{ secrets.JWT_SERVER_KEY }}" > server.key
 
-
+      # Step 4: Metadata to Production
+      - name: Deploy Metadata to Production
+        run: sf project deploy start \
+              --target-org "${{ secrets.SF_USERNAME_PROD }}"
